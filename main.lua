@@ -1,11 +1,25 @@
 Object = require 'libs/classic'
+Input = require 'libs/input'
+Timer = require 'libs/enhancedtimer'
 -- local love = require 'love'
 
 function love.load()
+    -- Load the libraries
     local object_files = {}
     recursiveEnumerate('objects', object_files)
     requireFiles(object_files)
-    circle = HyperCircle(400, 300, 50, 5, 100)
+    -- Test draw
+    circle = { radius = 24 }
+    -- Input
+    input = Input()
+    input:bind('mouse1', 'test')
+    -- Timer
+    timer = Timer()
+    timer:after(2, function()
+        timer:tween(6, circle, { radius = 96 }, 'in-out-cubic', function()
+            timer:tween(6, circle, { radius = 24 }, 'in-out-cubic')
+        end)
+    end)
 end
 
 function requireFiles(files)
@@ -28,11 +42,13 @@ function recursiveEnumerate(folder, file_list)
 end
 
 function love.update(dt)
-    circle:update(dt)
+    -- circle:update(dt)
+    timer:update(dt)
 end
 
 function love.draw()
-    circle:draw()
+    -- circle:draw()
+    love.graphics.circle('fill', 400, 300, circle.radius)
 end
 
 function love.keypressed(key)
